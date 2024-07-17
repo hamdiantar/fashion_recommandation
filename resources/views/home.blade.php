@@ -82,23 +82,23 @@
               </button>
               <ul class="inner-links-list" id="innerLink">
                 <li style="display: flex;justify-content: space-around;">
-                  <div>
-                    <h6 class="text-center">Select Style top:</h6>
-                    @foreach ($imageListTops as $image)
-                      <div class="mb-3">
-                        <input type="radio" id="top-{{ $loop->index }}" name="selectedTopImage" value="{{ $image['name'] }}">
-                        <label for="top-{{ $loop->index }}">
-                          <img src="{{ $image['url'] }}" alt="{{ $image['name'] }}" class="img-fluid imgModel">
-                        </label>
-                      </div>
-                    @endforeach
-                  </div>
+{{--                  <div>--}}
+{{--                    <h6 class="text-center">Select Style top:</h6>--}}
+{{--                    @foreach ($imageListTops as $image)--}}
+{{--                      <div class="mb-3">--}}
+{{--                        <input type="radio" id="top-{{ $loop->index }}" name="selectedTopImage" value="{{ $image['name'] }}">--}}
+{{--                        <label for="top-{{ $loop->index }}">--}}
+{{--                          <img src="{{ $image['url'] }}" alt="{{ $image['name'] }}" class="img-fluid imgModel">--}}
+{{--                        </label>--}}
+{{--                      </div>--}}
+{{--                    @endforeach--}}
+{{--                  </div>--}}
 
                   <div>
-                    <h6 class="text-center">Select Style Bottom:</h6>
-                    @foreach ($imageListBottoms as $image)
+                    <h6 class="text-center">Full Style:</h6>
+                    @foreach ($imageListFullStyles as $image)
                       <div class="mb-3">
-                        <input type="radio" id="bottom-{{ $loop->index }}" name="selectedBottomImage" value="{{ $image['name'] }}">
+                        <input type="radio" id="bottom-{{ $loop->index }}" name="selectedFullStyle" value="{{ $image['name'] }}">
                         <label for="bottom-{{ $loop->index }}">
                           <img src="{{ $image['url'] }}" alt="{{ $image['name'] }}" class="img-fluid imgModel">
                         </label>
@@ -106,10 +106,10 @@
                     @endforeach
                   </div>
                   <div style=" border-left: 1px solid #b7b0b0;padding-left: 18px;">
-                    <h6 class="text-center">Select Shoes:</h6>
-                  @foreach ($imageListShoes as $image)
+                    <h6 class="text-center">Select Skirts Or Pants:</h6>
+                  @foreach ($imageListBottoms as $image)
                     <div class=" mb-3">
-                      <input type="radio" id="shoe-{{ $loop->index }}" name="selectedShoeImage" value="{{ $image['name'] }}">
+                      <input type="radio" id="shoe-{{ $loop->index }}" name="selectedFullStyle" value="{{ $image['name'] }}">
                       <label for="shoe-{{ $loop->index }}">
                         <img src="{{ $image['url'] }}" alt="{{ $image['name'] }}" class="img-fluid imgModel">
                       </label>
@@ -125,6 +125,9 @@
                     <option value="Man">Man</option>
                     <option value="Women">Women</option>
                   </select>
+                </li>
+                <li class="active">
+                  <textarea class="form-control" name="extra_info" id="extra_info" placeholder="you can write extra information here"></textarea>
                 </li>
                 <li class="new_li">
                   <button  class="new_button" onclick="collectAndSendData()"><i class="iconsax" data-icon="send-1"></i></button>
@@ -233,7 +236,7 @@
                 @foreach(auth()->user()->images as $image)
                   <li class="history-main">
                     <div class="history-detail text-truncate">
-                     <a href="{{$image->image_path}}" target="_blank"> <i class="fa fa-download"></i></a>
+
                       <img src="{{ $image->image_path }}" alt="User Image">
                       <div>
                         <p>{{ $image->description }}</p>
@@ -242,7 +245,8 @@
                     </div>
                     <div class="history-time d-sm-flex d-none">
                       <ul>
-                        <li>{{ $image->created_at->diffForHumans() }}</li>
+                        <li class="bcolor">      <a class="download" href="{{$image->image_path}}" target="_blank"> <i class="fa fa-download"></i></a></li>
+                        <li class="bcolor">{{ $image->created_at->diffForHumans() }}</li>
                       </ul>
                     </div>
                   </li>
@@ -388,29 +392,24 @@
     $("#responseHTTP").html('');
     document.getElementById('loadingIndicator').style.display = 'block';
 
-    // Check if any image is selected
-    const selectedTopImage = document.querySelector('input[name="selectedTopImage"]:checked');
-    const selectedBottomImage = document.querySelector('input[name="selectedBottomImage"]:checked');
-    const selectedShoeImage = document.querySelector('input[name="selectedShoeImage"]:checked');
 
-    if ((!selectedTopImage || !selectedBottomImage) && !selectedShoeImage) {
+    const selectedFullStyle = document.querySelector('input[name="selectedFullStyle"]:checked');
+
+    if (!selectedFullStyle) {
       alert('Please design pattern before continue');
       document.getElementById('loadingIndicator').style.display = 'none';
       return;
     }
 
     const gender = $("#gender").val();
+    const extra_info = $("#extra_info").val();
     const data = {
-      "gender": gender
+      "gender": gender,
+      "extra_info": extra_info,
     };
 
-    if (selectedTopImage && selectedBottomImage) {
-      data.selectedTopImage = selectedTopImage.value;
-      data.selectedBottomImage = selectedBottomImage.value;
-    }
-
-    if (selectedShoeImage) {
-      data.selectedShoeImage = selectedShoeImage.value;
+    if (selectedFullStyle) {
+      data.selectedFullStyle = selectedFullStyle.value;
     }
 
     $.ajax({

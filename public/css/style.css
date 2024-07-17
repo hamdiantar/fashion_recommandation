@@ -48,7 +48,9 @@
   --info-color: 220, 154, 254;
   --danger-color: 157, 145, 255;
 }
-
+.bcolor {
+    color: black !important;
+}
 /*=====================
     1.1 Reset CSS start
 ==========================*/
@@ -785,8 +787,8 @@ li {
     border: 6px solid #ffd639;border-radius: 10px;
 }
 #fashionImage {
-    height: 100%;
-    width: 100%;
+    height:300px !important;
+    width: auto;
 }
 #downloadButton {
     width: 89%;
@@ -6744,3 +6746,23 @@ header .offcanvas-backdrop {
   }
 }
 /*# sourceMappingURL=style.css.map */
+.main-wrapper .main-section .history-sec .history-main .history-detail img {
+    width: 150px !important;
+    height: 140px !important;
+    padding: 8px;
+    border: 1px solid #929292 !important;
+    border-radius: 6px;
+}
+.main-wrapper .main-section .history-sec .history-main .history-detail img {
+    background-color: rgb(255 255 255) !important;
+}
+.main-wrapper .main-section .history-sec .history-main {
+    border-bottom: 1px solid #bab1b1;
+}
+.download {
+    font-size: 24px;
+    border: 1px solid black;
+    padding: 6px;
+    border-radius: 10px;
+    color: black;
+}

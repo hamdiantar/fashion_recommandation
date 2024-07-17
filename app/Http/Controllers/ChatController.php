@@ -9,6 +9,7 @@ use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Throwable;
@@ -25,7 +26,8 @@ class ChatController extends Controller
         $open_ai_key = 'sk-proj-v5VAdBG7GPcwO7JIf6c3T3BlbkFJt997WRSlvOqyUsc1bXuq';
         $open_ai = new OpenAi($open_ai_key);
         $des = $this->describeImages($request);
-        $message = 'Generate a model fashion design then make the design generated on real human ['.$request->gender.']'.$des;
+        $message = 'Generate a model fashion design then make the design generated on real human
+        ['.$request->gender.']'.$des.' with this extra info :'. $request->extra_info;
         $complete = $open_ai->image([
             "prompt" => $message,
             "n" => 1,
@@ -42,20 +44,18 @@ class ChatController extends Controller
     public function describeImages(Request $request)
     {
         $open_ai_key = 'sk-proj-v5VAdBG7GPcwO7JIf6c3T3BlbkFJt997WRSlvOqyUsc1bXuq';
-
-//        $selectedTopImage = $request->input('selectedTopImage');
-//        $imagePathTop = public_path('ai/tops/' . $selectedTopImage);
-//        $encodedImageTop = $this->encodeImage($imagePathTop, 'tops');
-//
-//        $selectedBottomImage = $request->input('selectedBottomImage');
-//        $imagePathBottom = public_path('ai/bottoms/' . $selectedBottomImage);
-//        $encodedImageBottom = $this->encodeImage($imagePathBottom, 'bottoms');
-
-        $selectedShoeImage = $request->input('selectedShoeImage');
-        $imagePathShoe = public_path('ai/shoes/' . $selectedShoeImage);
-        $encodedImageShoe = $this->encodeImage($imagePathShoe, 'shoes');
-
-
+        $selectedFullStyle = $request->input('selectedFullStyle');
+        $imagePathFullStyle1 = public_path('ai/full_style/' . $selectedFullStyle);
+        $imagePathFullStyle2 = public_path('ai/bottoms/' . $selectedFullStyle);
+        $imageExistsInFullStyle = File::exists($imagePathFullStyle1);
+        $imageExistsInBottoms = File::exists($imagePathFullStyle2);
+        if ($imageExistsInFullStyle) {
+            $imagePathFullStyle = $imagePathFullStyle1;
+        }
+        if ($imageExistsInBottoms) {
+            $imagePathFullStyle = $imagePathFullStyle2;
+        }
+        $encodedImageFullStyle = $this->encodeImage($imagePathFullStyle, 'shoes');
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer ' . $open_ai_key
@@ -66,25 +66,9 @@ class ChatController extends Controller
                     'role' => 'user',
                     'content' => [
                         [
-                            'type' => 'text',
-                            'text' => 'Please accurately describe the photos with all the details (please make Description of the images in 600 characters or less)'
-                        ],
-//                        [
-//                            'type' => 'image_url',
-//                            'image_url' => [
-//                                'url' => 'data:image/jpeg;base64,' . $encodedImageTop
-//                            ]
-//                        ],
-//                        [
-//                            'type' => 'image_url',
-//                            'image_url' => [
-//                                'url' => 'data:image/jpeg;base64,' . $encodedImageBottom
-//                            ]
-//                        ],
-                        [
                             'type' => 'image_url',
                             'image_url' => [
-                                'url' => 'data:image/jpeg;base64,' . $encodedImageShoe
+                                'url' => 'data:image/jpeg;base64,' . $encodedImageFullStyle
                             ]
                         ]
                     ]
@@ -125,12 +109,15 @@ class ChatController extends Controller
     {
         $imageContent = file_get_contents($imageUrl);
         $filename = uniqid('image_') . '.png';
-        $path = 'uploads/' . $filename;
-        Storage::disk('public')->put($path, $imageContent);
-
+        $path = public_path('uploads/' . $filename);
+        // Ensure the uploads directory exists
+        if (!file_exists(public_path('uploads'))) {
+            mkdir(public_path('uploads'), 0755, true);
+        }
+        file_put_contents($path, $imageContent);
         $design = new ClothingDesign();
         $design->user_id = Auth::id();
-        $design->image_url = $path;
+        $design->image_url = 'uploads/' . $filename; // Store the relative path
         $design->description = $request->post('content');
         $design->save();
     }

@@ -19,16 +19,15 @@ class HomeController extends Controller
 
     public function index()
     {
-        $imagesPathTops = public_path('ai/tops');
-        $imagesTops = array_diff(scandir($imagesPathTops), ['.', '..']);
-        $imageListTops = [];
-        foreach ($imagesTops as $image) {
-            $imageListTops[] = [
+        $imagesPathFullStyles = public_path('ai/full_style');
+        $imagesFullStyles = array_diff(scandir($imagesPathFullStyles), ['.', '..']);
+        $imageListFullStyles = [];
+        foreach ($imagesFullStyles as $image) {
+            $imageListFullStyles[] = [
                 'name' => $image,
-                'url' => asset('ai/tops/' . $image)
+                'url' => asset('ai/full_style/' . $image)
             ];
         }
-
         $imagesPathBottoms = public_path('ai/bottoms');
         $imagesBottoms = array_diff(scandir($imagesPathBottoms), ['.', '..']);
         $imageListBottoms = [];
@@ -38,18 +37,6 @@ class HomeController extends Controller
                 'url' => asset('ai/bottoms/' . $image)
             ];
         }
-
-
-        $imagesPathShoes = public_path('ai/shoes');
-        $imagesShoes = array_diff(scandir($imagesPathShoes), ['.', '..']);
-        $imageListShoes = [];
-        foreach ($imagesShoes as $image) {
-            $imageListShoes[] = [
-                'name' => $image,
-                'url' => asset('ai/shoes/' . $image)
-            ];
-        }
-
-        return view('home', compact('imageListShoes', 'imageListBottoms', 'imageListTops'));
+        return view('home', compact('imageListBottoms', 'imageListFullStyles'));
     }
 }

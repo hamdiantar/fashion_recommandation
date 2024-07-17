@@ -17,6 +17,6 @@ class ClothingDesign extends Model
 
     public function getImagePathAttribute()
     {
-        return asset('storage/'.$this->image_url);
+        return asset($this->image_url);
     }
 }

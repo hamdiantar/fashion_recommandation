@@ -22,18 +22,18 @@
           <div class="home-laptop px-md-0 px-3">
             <div class="laptop-sec position-relative">
               <div class="hand-sec">
-                <img src="{{asset('images/hand.png')}}" class="img-fluid left-hand" alt="hand">
-                <img src="{{asset('images/hand.png')}}" class="img-fluid right-hand" alt="hand">
-                <img src="{{asset('images/finger.png')}}" class="img-fluid left-finger" alt="hand">
-                <img src="{{asset('images/finger.png')}}" class="img-fluid right-finger" alt="hand">
+{{--                <img src="{{asset('images/hand.png')}}" class="img-fluid left-hand" alt="hand">--}}
+{{--                <img src="{{asset('images/hand.png')}}" class="img-fluid right-hand" alt="hand">--}}
+{{--                <img src="{{asset('images/finger.png')}}" class="img-fluid left-finger" alt="hand">--}}
+{{--                <img src="{{asset('images/finger.png')}}" class="img-fluid right-finger" alt="hand">--}}
               </div>
-              <img src="{{asset('images/laptop.png')}}" class="img-fluid laptop-img" alt="laptop">
+              <img src="{{asset('images/bg.jpeg')}}" class="img-fluid laptop-img" alt="laptop">
             </div>
             <div class="home-info">
               <ul class="info-list">
-                <li>Ask anything </li>
-                <li>Generate image</li>
-                <li>Translate anything</li>
+                <li class="bcolor">Ask anything </li>
+                <li class="bcolor">Generate image</li>
+                <li class="bcolor">Translate anything</li>
               </ul>
               <ul class="star-rating">
                 <li><i class="fa fa-star text-warning"></i></li>
